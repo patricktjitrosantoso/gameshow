@@ -53,22 +53,87 @@ const SUPABASE_ANON_KEY = 'sb_publishable_U2JYvPW9JTNEJG3DNV1sPQ_ySHHyog3';
 
 /* ========= 2. ITEMS: a = answer, alt = other accepted names, u = image URL =========
    Images load from Wikimedia Commons by file name. If one doesn't load, swap in any image URL. */
-const W = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(f) + '?width=800';
+const W = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(f).replace(/'/g,'%27') + '?width=800';
 const ITEMS = [
+ // --- logos & brands ---
  {a:"McDonald's", alt:["mcdonalds","maccas","golden arches"], u:W("McDonald's_Golden_Arches.svg")},
- {a:"Nike", alt:["nike swoosh"], u:W("Logo_NIKE.svg")},
+ {a:"Nike", alt:["nike swoosh","swoosh"], u:W("Logo_NIKE.svg")},
  {a:"Adidas", alt:[], u:W("Adidas_Logo.svg")},
  {a:"Starbucks", alt:["starbucks coffee"], u:W("Starbucks_Corporation_Logo_2011.svg")},
  {a:"Coca-Cola", alt:["coke","coca cola"], u:W("Coca-Cola_logo.svg")},
+ {a:"Pepsi", alt:[], u:W("Pepsi_2023.svg")},
  {a:"Netflix", alt:[], u:W("Netflix_2015_logo.svg")},
  {a:"YouTube", alt:["you tube"], u:W("YouTube_full-color_icon_(2017).svg")},
  {a:"Google", alt:[], u:W("Google_2015_logo.svg")},
  {a:"Apple", alt:["apple logo"], u:W("Apple_logo_black.svg")},
  {a:"Instagram", alt:["insta"], u:W("Instagram_icon.png")},
+ {a:"Facebook", alt:["fb"], u:W("Facebook_f_logo_(2019).svg")},
+ {a:"X", alt:["twitter"], u:W("X_logo_2023.svg")},
+ {a:"Snapchat", alt:["snap"], u:W("Snapchat_logo.svg")},
+ {a:"WhatsApp", alt:["whats app"], u:W("WhatsApp.svg")},
+ {a:"Spotify", alt:[], u:W("Spotify_logo_without_text.svg")},
+ {a:"Amazon", alt:[], u:W("Amazon_logo.svg")},
+ {a:"Microsoft", alt:[], u:W("Microsoft_logo_(2012).svg")},
+ {a:"Samsung", alt:[], u:W("Samsung_Logo.svg")},
+ {a:"Xbox", alt:["x box"], u:W("Xbox_one_logo.svg")},
+ {a:"Nintendo", alt:[], u:W("Nintendo.svg")},
+ {a:"Pokeball", alt:["poke ball","pokemon ball","pokemon"], u:W("Pokebola-pokeball-png-0.png")},
  {a:"LEGO", alt:["lego bricks"], u:W("LEGO_logo.svg")},
- {a:"Pizza", alt:[], u:W("Pizza-3007395.jpg")},
+ {a:"Toyota", alt:[], u:W("Toyota_carlogo.svg")},
+ {a:"BMW", alt:[], u:W("BMW.svg")},
+ {a:"Mercedes", alt:["mercedes benz","merc"], u:W("Mercedes-Logo.svg")},
+ {a:"Audi", alt:[], u:W("Audi-Logo_2016.svg")},
+ {a:"Volkswagen", alt:["vw","volks wagen"], u:W("Volkswagen_logo_2019.svg")},
+ {a:"Ford", alt:[], u:W("Ford_Motor_Company_Logo.svg")},
+ {a:"Tesla", alt:[], u:W("Tesla_Motors.svg")},
+ {a:"Burger King", alt:["bk"], u:W("Burger_King_2020.svg")},
+ {a:"Subway", alt:[], u:W("Subway_2016_logo.svg")},
+ {a:"Domino's", alt:["dominos","domino pizza"], u:W("Domino's_pizza_logo.svg")},
+ {a:"Lacoste", alt:["crocodile"], u:W("Lacoste_logo.svg")},
+ {a:"Under Armour", alt:["underarmour"], u:W("Under_armour_logo.svg")},
+ {a:"Reebok", alt:[], u:W("Reebok_2019_logo.svg")},
+ {a:"New Balance", alt:["nb"], u:W("New_Balance_logo.svg")},
+ {a:"Converse", alt:[], u:W("Converse_logo.svg")},
+ {a:"Android", alt:["android robot"], u:W("Android_robot.svg")},
+ {a:"Chrome", alt:["google chrome"], u:W("Google_Chrome_icon_(February_2022).svg")},
+ {a:"Firefox", alt:["mozilla firefox","mozilla"], u:W("Firefox_logo,_2019.svg")},
+ {a:"Windows", alt:["microsoft windows"], u:W("Windows_logo_-_2021.svg")},
+ {a:"LinkedIn", alt:["linked in"], u:W("LinkedIn_logo_initials.png")},
+ {a:"Wikipedia", alt:["wiki"], u:W("Wikipedia-logo-v2.svg")},
+ {a:"Olympics", alt:["olympic rings","olympic games","olympic"], u:W("Olympic_rings_without_rims.svg")},
+ // --- everyday items ---
+ {a:"Rubik's Cube", alt:["rubiks cube","rubix cube","cube"], u:W("Rubik's_cube.svg")},
+ {a:"Soccer Ball", alt:["football","soccer","soccer ball"], u:W("Football_(soccer_ball).svg")},
+ {a:"Basketball", alt:["basket ball"], u:W("Basketball.png")},
+ {a:"Guitar", alt:["acoustic guitar","classical guitar"], u:W("GuitareClassique5.png")},
+ // --- food ---
+ {a:"Pizza", alt:["pepperoni pizza"], u:W("Pizza-3007395.jpg")},
+ {a:"Hamburger", alt:["burger","cheeseburger"], u:W("Hamburger_(black_bg).jpg")},
+ {a:"French Fries", alt:["fries","chips","hot chips"], u:W("French_Fries.JPG")},
+ {a:"Hot Dog", alt:["hotdog"], u:W("Hot_dog_with_mustard.png")},
+ {a:"Sushi", alt:[], u:W("Sushi_platter.jpg")},
+ {a:"Donut", alt:["doughnut"], u:W("Glazed-Donut.jpg")},
+ {a:"Ice Cream", alt:["icecream"], u:W("Ice_Cream_dessert_02.jpg")},
+ {a:"Cookie", alt:["chocolate chip cookie","biscuit"], u:W("Chocolate_Chip_Cookies_-_kimberlykv.jpg")},
+ {a:"Popcorn", alt:["pop corn"], u:W("Popcorn_-_Studio.jpg")},
+ {a:"Egg", alt:["chicken egg"], u:W("Chicken_egg_2009-06-04.jpg")},
+ {a:"Bread", alt:["loaf","bread loaf"], u:W("Korb_mit_Brot.jpg")},
+ {a:"Coffee", alt:["cup of coffee"], u:W("A_small_cup_of_coffee.JPG")},
+ {a:"Corn", alt:["corn on the cob","sweetcorn"], u:W("Corncobs.jpg")},
  {a:"Banana", alt:[], u:W("Banana-Single.jpg")},
  {a:"Apple", alt:["red apple"], u:W("Red_Apple.jpg")},
+ {a:"Strawberry", alt:[], u:W("PerfectStrawberry.jpg")},
+ {a:"Pineapple", alt:[], u:W("Pineapple_and_cross_section.jpg")},
+ {a:"Orange", alt:[], u:W("Orange-Fruit-Pieces.jpg")},
+ {a:"Lemon", alt:[], u:W("Lemon.jpg")},
+ {a:"Grapes", alt:["grape"], u:W("Table_grapes_on_white.jpg")},
+ {a:"Cherry", alt:["cherries"], u:W("Cherry_Stella444.jpg")},
+ {a:"Kiwi", alt:["kiwifruit","kiwi fruit"], u:W("Kiwi_aka.jpg")},
+ {a:"Mango", alt:[], u:W("Mangos_-_single_and_halved.jpg")},
+ {a:"Avocado", alt:["avo"], u:W("Avocado_Hass_-_single_and_halved.jpg")},
+ {a:"Tomato", alt:[], u:W("Tomato_je.jpg")},
+ {a:"Broccoli", alt:[], u:W("Broccoli_and_cross_section_edit.jpg")},
+ {a:"Carrot", alt:["carrots"], u:W("Carrots_of_many_colors.jpg")},
 ];
 const ROUND_SECONDS = 25, REVEAL_MS = 5000;
 
@@ -165,7 +230,7 @@ function buildStage(cfg, onReady){
     const t0 = performance.now(); let raf;
     const tick = () => {
       const t = Math.min(1, (performance.now()-t0)/(cfg.dur*1000));
-      if(cfg.mode==='zoom') inner.style.transform = `scale(${12 - 11*t})`;
+      if(cfg.mode==='zoom') inner.style.transform = `scale(${1 + 5*(1-t)*(1-t)})`;
       else if(cfg.mode==='blur') inner.style.filter = `blur(${44*(1-t)*(1-t)}px)`;
       else {
         const k = Math.floor(Math.min(1, t/.85)*16);
@@ -190,14 +255,21 @@ const stageHTML = (n,total) => `<div class="meta"><span>Round ${n} of ${total}</
 
 /* ========= host game loop ========= */
 function hostStart(rounds){
-  S.started = true; S.total = rounds; S.queue = shuffle(ITEMS.map((_,i)=>i)).slice(0,rounds); S.round = 0;
+  S.started = true; S.total = rounds; S.queue = shuffle(ITEMS.map((_,i)=>i)); S.pos = 0; S.round = 0;
   S.scores = Object.fromEntries(S.players.map(p=>[p,0]));
   ch.send({type:'broadcast', event:'start', payload:{}});
   setTimeout(hostNext, 2000);
 }
-function hostNext(){
-  if(S.round >= S.total){ ch.send({type:'broadcast', event:'end', payload:{scores:S.scores}}); return showEnd(S.scores); }
-  const cfg = {n:S.round+1, total:S.total, idx:S.queue[S.round], mode:MODES[Math.random()*3|0], ox:20+Math.random()*60|0, oy:20+Math.random()*60|0, perm:shuffle([...Array(16).keys()]), dur:ROUND_SECONDS};
+const canLoad = idx => new Promise(res => { const i = new Image(); const t = setTimeout(()=>res(false), 7000);
+  i.onload = () => { clearTimeout(t); res(true); }; i.onerror = () => { clearTimeout(t); res(false); }; i.src = ITEMS[idx].u; });
+async function hostNext(){
+  let pick = null;
+  if(S.round < S.total){
+    app.innerHTML = '<div class="card"><h2>Next round…</h2></div>';
+    while(S.pos < S.queue.length){ const idx = S.queue[S.pos++]; if(await canLoad(idx)){ pick = idx; break; } console.warn('Skipped, image failed:', ITEMS[idx].a); }
+  }
+  if(pick === null){ ch.send({type:'broadcast', event:'end', payload:{scores:S.scores}}); return showEnd(S.scores); }
+  const cfg = {n:S.round+1, total:S.total, idx:pick, mode:MODES[Math.random()*3|0], ox:35+Math.random()*30|0, oy:35+Math.random()*30|0, perm:shuffle([...Array(16).keys()]), dur:ROUND_SECONDS};
   S.round++; S.cur = {cfg, answered:{}, t0:Date.now(), over:false};
   ch.send({type:'broadcast', event:'round', payload:cfg});
   app.innerHTML = `<div class="game host"><div>${stageHTML(cfg.n,cfg.total)}<div class="reveal" id="rv">&nbsp;</div></div>
