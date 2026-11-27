@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guess It!</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--blue:#1c2f7a;--deep:#121e52;--yellow:#ffd23f;--coral:#ff5a4e;--paper:#fffaf0;--ok:#2ec27e}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Nunito,system-ui,sans-serif;font-weight:600;color:var(--paper);
+ background:radial-gradient(ellipse at 50% -10%,#3a55c4 0,var(--blue) 45%,var(--deep) 100%) fixed}
+h1,h2{font-family:'Bowlby One',Impact,sans-serif;font-weight:400;margin:0;letter-spacing:.5px}
+h1{font-size:clamp(2.6rem,9vw,4.6rem);color:var(--yellow);text-shadow:4px 4px 0 var(--coral)}
+#app{max-width:980px;margin:0 auto;padding:24px 16px 48px}
+.card{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.18);border-radius:18px;padding:20px;margin-top:18px}
+input{font:inherit;font-weight:800;font-size:1.1rem;padding:12px 14px;border-radius:12px;border:3px solid var(--yellow);background:var(--paper);color:var(--deep);width:100%}
+input:focus-visible,button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+button{font:inherit;font-weight:800;font-size:1.1rem;padding:12px 20px;border:0;border-radius:12px;background:var(--yellow);color:var(--deep);cursor:pointer;box-shadow:0 5px 0 #b8901a}
+button:active{transform:translateY(3px);box-shadow:0 2px 0 #b8901a}
+button.alt{background:var(--paper);box-shadow:0 5px 0 #b9b3a3}
+button:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
+.code{font-family:'Bowlby One';font-size:clamp(3rem,12vw,6rem);color:var(--yellow);letter-spacing:10px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{background:var(--paper);color:var(--deep);padding:6px 14px;border-radius:99px;font-weight:800}
+.game{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:800px){.game.host{grid-template-columns:2fr 1fr}}
+.stage{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin:0 auto;background:#fff;border:6px solid var(--yellow);border-radius:20px;overflow:hidden;box-shadow:0 0 0 6px var(--coral),0 18px 40px rgba(0,0,0,.4)}
+.inner{position:absolute;inset:0;background-repeat:no-repeat;background-position:center;background-size:contain}
+.tile{position:absolute;width:25%;height:25%;overflow:hidden;transition:left .45s,top .45s}
+.tile>div{position:absolute;width:400%;height:400%;background-repeat:no-repeat;background-position:center;background-size:contain}
+.bar{height:14px;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden;margin:14px auto 0;max-width:520px}
+.bar>div{height:100%;background:var(--coral);width:100%}
+.meta{display:flex;justify-content:space-between;max-width:520px;margin:12px auto 0;font-weight:800}
+.fb{min-height:1.6em;text-align:center;font-weight:800;margin-top:8px}
+.board{list-style:none;margin:10px 0 0;padding:0}
+.board li{display:flex;justify-content:space-between;padding:9px 12px;border-radius:10px;margin-bottom:6px;background:rgba(255,255,255,.1)}
+.board li:first-child{background:var(--yellow);color:var(--deep)}
+.reveal{text-align:center;font-family:'Bowlby One';font-size:clamp(1.6rem,6vw,2.6rem);color:var(--yellow);margin-top:14px}
+.small{opacity:.8;font-size:.95rem}.err{color:#ffb3ad}
+@media(prefers-reduced-motion:reduce){.tile{transition:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* ========= 1. SETUP: paste your Supabase project values ========= */
+const SUPABASE_URL = 'https://ftmfmbkrraukhlurvbtb.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_U2JYvPW9JTNEJG3DNV1sPQ_ySHHyog3';
+
+/* ========= 2. ITEMS: a = answer, alt = other accepted names, u = image URL =========
+   Images load from Wikimedia Commons by file name. If one doesn't load, swap in any image URL. */
+const W = f => 'https://commons.wikimedia.org/wiki/Special:FilePath/' + encodeURIComponent(f) + '?width=800';
+const ITEMS = [
+ {a:"McDonald's", alt:["mcdonalds","maccas","golden arches"], u:W("McDonald's_Golden_Arches.svg")},
+ {a:"Nike", alt:["nike swoosh"], u:W("Logo_NIKE.svg")},
+ {a:"Adidas", alt:[], u:W("Adidas_Logo.svg")},
+ {a:"Starbucks", alt:["starbucks coffee"], u:W("Starbucks_Corporation_Logo_2011.svg")},
+ {a:"Coca-Cola", alt:["coke","coca cola"], u:W("Coca-Cola_logo.svg")},
+ {a:"Netflix", alt:[], u:W("Netflix_2015_logo.svg")},
+ {a:"YouTube", alt:["you tube"], u:W("YouTube_full-color_icon_(2017).svg")},
+ {a:"Google", alt:[], u:W("Google_2015_logo.svg")},
+ {a:"Apple", alt:["apple logo"], u:W("Apple_logo_black.svg")},
+ {a:"Instagram", alt:["insta"], u:W("Instagram_icon.png")},
+ {a:"LEGO", alt:["lego bricks"], u:W("LEGO_logo.svg")},
+ {a:"Pizza", alt:[], u:W("Pizza-3007395.jpg")},
+ {a:"Banana", alt:[], u:W("Banana-Single.jpg")},
+ {a:"Apple", alt:["red apple"], u:W("Red_Apple.jpg")},
+];
+const ROUND_SECONDS = 25, REVEAL_MS = 5000;
+
+/* ========= helpers ========= */
+const $ = id => document.getElementById(id);
+const app = $('app');
+const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, '');
+function lev(a, b){
+  const d = Array.from({length:a.length+1}, (_,i)=>[i]);
+  for(let j=1;j<=b.length;j++) d[0][j]=j;
+  for(let i=1;i<=a.length;i++) for(let j=1;j<=b.length;j++)
+    d[i][j]=Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+  return d[a.length][b.length];
+}
+function isCorrect(guess, item){
+  const g = norm(guess); if(g.length < 2) return false;
+  return [item.a, ...item.alt].some(x => {
+    const t = norm(x), allow = t.length<=3 ? 0 : t.length<=6 ? 1 : Math.floor(t.length*.25);
+    return lev(g,t) <= allow;
+  });
+}
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const boardHTML = sc => '<ol class="board">' + Object.entries(sc).sort((a,b)=>b[1]-a[1]).map(([n,p])=>`<li><span>${esc(n)}</span><b>${p}</b></li>`).join('') + '</ol>';
+const MODES = ['zoom','blur','puzzle'];
+
+/* ========= state ========= */
+let sb, ch, S = {role:null, name:'', code:'', players:[], scores:{}, cur:null, stopStage:null, timer:null, queue:[], total:0};
+
+function connect(code, name, role){
+  if(SUPABASE_URL.includes('YOUR-PROJECT')){ alert('Add your Supabase URL and anon key at the top of the file first.'); return false; }
+  sb = sb || supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  S.code = code; S.name = name; S.role = role;
+  ch = sb.channel('gs-' + code, {config:{broadcast:{self:false}, presence:{key: role==='host' ? 'HOST' : name}}});
+  ch.on('presence', {event:'sync'}, () => {
+    const st = ch.presenceState();
+    S.players = Object.keys(st).filter(k => k!=='HOST');
+    if(!S.cur && !S.started) renderLobby();
+  });
+  if(role==='host') ch.on('broadcast', {event:'guess'}, ({payload}) => hostGuess(payload));
+  else {
+    ch.on('broadcast', {event:'round'}, ({payload}) => playerRound(payload));
+    ch.on('broadcast', {event:'result'}, ({payload}) => playerResult(payload));
+    ch.on('broadcast', {event:'reveal'}, ({payload}) => playerReveal(payload));
+    ch.on('broadcast', {event:'end'}, ({payload}) => showEnd(payload.scores));
+    ch.on('broadcast', {event:'start'}, () => { S.started = true; app.innerHTML = '<div class="card"><h2>Get ready…</h2></div>'; });
+  }
+  ch.subscribe(async status => { if(status==='SUBSCRIBED') await ch.track({name, role}); });
+  return true;
+}
+
+/* ========= home ========= */
+function renderHome(){
+  app.innerHTML = `<h1>Guess It!</h1><p>Name the picture before it clears up. The faster you are, the more points you win.</p>
+  <div class="card"><label for="nm">Your name</label><input id="nm" maxlength="16" autocomplete="off">
+  <div class="row" style="margin-top:14px"><input id="cd" placeholder="Room code" maxlength="4" style="text-transform:uppercase"><button id="join">Join game</button></div>
+  <p class="small">Running the game on a big screen? <button class="alt" id="host" style="margin-left:8px;padding:6px 14px">Host a game</button></p></div>`;
+  $('join').onclick = () => {
+    const n = $('nm').value.trim(), c = $('cd').value.trim().toUpperCase();
+    if(!n || c.length!==4) return alert('Enter your name and the 4-letter room code.');
+    if(connect(c, n, 'player')) app.innerHTML = '<div class="card"><h2>Joining…</h2></div>', setTimeout(renderLobby, 600);
+  };
+  $('host').onclick = () => {
+    const code = Array.from({length:4}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join('');
+    if(connect(code, 'Host', 'host')) renderLobby();
+  };
+}
+
+function renderLobby(){
+  const chips = S.players.map(p=>`<span class="chip">${esc(p)}</span>`).join('') || '<span class="small">Waiting for players…</span>';
+  if(S.role==='host') app.innerHTML = `<h1>Guess It!</h1><div class="card"><div class="small">Join with room code</div><div class="code">${S.code}</div>
+   <div class="chips">${chips}</div>
+   <div class="row" style="margin-top:18px;max-width:420px"><label>Rounds <input id="rounds" type="number" min="1" max="${ITEMS.length}" value="${Math.min(8,ITEMS.length)}"></label><button id="go" ${S.players.length?'':'disabled'}>Start game</button></div></div>`,
+    $('go').onclick = () => hostStart(Math.max(1, Math.min(ITEMS.length, +$('rounds').value||8)));
+  else app.innerHTML = `<h1>Guess It!</h1><div class="card"><h2>You're in, ${esc(S.name)}!</h2><p>Room ${S.code}. Waiting for the host to start.</p><div class="chips">${chips}</div></div>`;
+}
+
+/* ========= stage (shared by host + players) ========= */
+function buildStage(cfg, onReady){
+  const item = ITEMS[cfg.idx], url = item.u;
+  const stage = $('stage'); stage.innerHTML = '';
+  const img = new Image();
+  img.onerror = () => { stage.innerHTML = '<p style="color:#900;padding:20px">Image failed to load.</p>'; };
+  img.onload = () => {
+    let inner, tiles = [], lastK = -1;
+    if(cfg.mode==='puzzle'){
+      for(let i=0;i<16;i++){
+        const t = document.createElement('div'); t.className='tile';
+        t.innerHTML = `<div style="background-image:url('${url}');left:${-(i%4)*100}%;top:${-(i/4|0)*100}%"></div>`;
+        stage.appendChild(t); tiles.push(t);
+      }
+    } else { inner = document.createElement('div'); inner.className='inner'; inner.style.backgroundImage=`url('${url}')`;
+      inner.style.transformOrigin = `${cfg.ox}% ${cfg.oy}%`; stage.appendChild(inner); }
+    const t0 = performance.now(); let raf;
+    const tick = () => {
+      const t = Math.min(1, (performance.now()-t0)/(cfg.dur*1000));
+      if(cfg.mode==='zoom') inner.style.transform = `scale(${12 - 11*t})`;
+      else if(cfg.mode==='blur') inner.style.filter = `blur(${44*(1-t)*(1-t)}px)`;
+      else {
+        const k = Math.floor(Math.min(1, t/.85)*16);
+        if(k!==lastK){ lastK = k;
+          const solved = new Set(cfg.perm.slice(0,k)), un = [...Array(16).keys()].filter(i=>!solved.has(i));
+          tiles.forEach((el,i)=>{ let p = i;
+            if(!solved.has(i) && un.length>1) p = un[(un.indexOf(i)+1)%un.length];
+            el.style.left = (p%4)*25+'%'; el.style.top = (p/4|0)*25+'%'; });
+        }
+      }
+      const bar = $('bar'); if(bar) bar.style.width = (100*(1-t))+'%';
+      const tm = $('tm'); if(tm) tm.textContent = Math.ceil(cfg.dur*(1-t))+'s';
+      if(t<1) raf = requestAnimationFrame(tick);
+    };
+    tick(); S.stopStage = () => cancelAnimationFrame(raf);
+    onReady && onReady();
+  };
+  img.src = url;
+}
+function stopStage(){ if(S.stopStage){ S.stopStage(); S.stopStage=null; } }
+const stageHTML = (n,total) => `<div class="meta"><span>Round ${n} of ${total}</span><span id="tm"></span></div><div class="bar"><div id="bar"></div></div><div class="stage" id="stage" style="margin-top:14px"></div>`;
+
+/* ========= host game loop ========= */
+function hostStart(rounds){
+  S.started = true; S.total = rounds; S.queue = shuffle(ITEMS.map((_,i)=>i)).slice(0,rounds); S.round = 0;
+  S.scores = Object.fromEntries(S.players.map(p=>[p,0]));
+  ch.send({type:'broadcast', event:'start', payload:{}});
+  setTimeout(hostNext, 2000);
+}
+function hostNext(){
+  if(S.round >= S.total){ ch.send({type:'broadcast', event:'end', payload:{scores:S.scores}}); return showEnd(S.scores); }
+  const cfg = {n:S.round+1, total:S.total, idx:S.queue[S.round], mode:MODES[Math.random()*3|0], ox:20+Math.random()*60|0, oy:20+Math.random()*60|0, perm:shuffle([...Array(16).keys()]), dur:ROUND_SECONDS};
+  S.round++; S.cur = {cfg, answered:{}, t0:Date.now(), over:false};
+  ch.send({type:'broadcast', event:'round', payload:cfg});
+  app.innerHTML = `<div class="game host"><div>${stageHTML(cfg.n,cfg.total)}<div class="reveal" id="rv">&nbsp;</div></div>
+   <div class="card"><h2 style="font-size:1.4rem">Scores</h2><div id="lb">${boardHTML(S.scores)}</div><p class="small" id="ans">0 correct</p></div></div>`;
+  buildStage(cfg, () => { S.cur.t0 = Date.now(); });
+  clearTimeout(S.timer); S.timer = setTimeout(hostEnd, cfg.dur*1000 + 800);
+}
+function hostGuess({name, text}){
+  const c = S.cur; if(!c || c.over || c.answered[name]!==undefined) return;
+  if(!(name in S.scores)) S.scores[name] = 0;
+  const item = ITEMS[c.cfg.idx];
+  if(isCorrect(text, item)){
+    const frac = Math.max(0, 1 - (Date.now()-c.t0)/(c.cfg.dur*1000));
+    const pts = Math.round(100 + 900*frac);
+    c.answered[name] = pts; S.scores[name] += pts;
+    ch.send({type:'broadcast', event:'result', payload:{name, ok:true, pts}});
+    $('lb').innerHTML = boardHTML(S.scores); $('ans').textContent = Object.keys(c.answered).length + ' correct';
+    if(Object.keys(c.answered).length >= S.players.length){ clearTimeout(S.timer); S.timer = setTimeout(hostEnd, 600); }
+  } else ch.send({type:'broadcast', event:'result', payload:{name, ok:false}});
+}
+function hostEnd(){
+  const c = S.cur; if(!c || c.over) return; c.over = true; stopStage();
+  const ans = ITEMS[c.cfg.idx].a;
+  ch.send({type:'broadcast', event:'reveal', payload:{answer:ans, scores:S.scores}});
+  const st = $('stage'); if(st){ st.querySelectorAll('.inner').forEach(e=>{e.style.transform='scale(1)';e.style.filter='none'}); }
+  $('rv').textContent = ans; $('lb').innerHTML = boardHTML(S.scores);
+  S.timer = setTimeout(hostNext, REVEAL_MS);
+}
+
+/* ========= player ========= */
+function playerRound(cfg){
+  S.cur = {cfg, done:false}; stopStage();
+  app.innerHTML = `<div class="game">${stageHTML(cfg.n,cfg.total)}
+   <div style="max-width:520px;margin:0 auto;width:100%"><div class="row"><input id="g" placeholder="What is it?" autocomplete="off" autocapitalize="off"><button id="sub" style="flex:0 0 auto">Guess</button></div>
+   <div class="fb" id="fb"></div><div class="reveal" id="rv">&nbsp;</div><div class="small" style="text-align:center">Score: <b id="sc">${S.scores[S.name]||0}</b></div></div></div>`;
+  const send = () => { const v = $('g').value.trim(); if(!v || S.cur.done) return;
+    ch.send({type:'broadcast', event:'guess', payload:{name:S.name, text:v}}); };
+  $('sub').onclick = send; $('g').onkeydown = e => { if(e.key==='Enter') send(); };
+  buildStage(cfg, () => $('g') && $('g').focus());
+}
+function playerResult(p){
+  if(p.name!==S.name || !S.cur) return;
+  const fb = $('fb'); if(!fb) return;
+  if(p.ok){ S.cur.done = true; S.scores[S.name] = (S.scores[S.name]||0) + p.pts; $('sc').textContent = S.scores[S.name];
+    fb.style.color = 'var(--ok)'; fb.textContent = `Correct! +${p.pts}`; $('g').disabled = true; $('sub').disabled = true; }
+  else { fb.style.color = '#ffb3ad'; fb.textContent = 'Not quite, try again'; $('g').select(); }
+}
+function playerReveal(p){
+  stopStage(); S.scores = p.scores;
+  const st = $('stage'); if(st) st.querySelectorAll('.inner').forEach(e=>{e.style.transform='scale(1)';e.style.filter='none'});
+  if($('rv')) $('rv').textContent = p.answer;
+  if($('sc')) $('sc').textContent = p.scores[S.name]||0;
+  if($('g')){ $('g').disabled = true; $('sub').disabled = true; }
+}
+function showEnd(scores){
+  stopStage(); clearTimeout(S.timer);
+  const top = Object.entries(scores).sort((a,b)=>b[1]-a[1])[0];
+  app.innerHTML = `<h1>Game over!</h1><div class="card"><div class="reveal" style="margin-top:0">${top ? esc(top[0]) + ' wins!' : ''}</div>${boardHTML(scores)}
+   <p><button id="again">Back to start</button></p></div>`;
+  $('again').onclick = () => { if(ch) sb.removeChannel(ch); S = {...S, role:null, cur:null, started:false, scores:{}, players:[]}; renderHome(); };
+}
+renderHome();
+</script>
+</body>
+</html>
