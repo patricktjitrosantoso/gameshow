@@ -30,8 +30,8 @@ button:disabled{opacity:.5;cursor:default}
 @media(min-width:800px){.game.host{grid-template-columns:2fr 1fr}}
 .stage{position:relative;width:100%;max-width:520px;aspect-ratio:1;margin:0 auto;background:#fff;border:6px solid var(--yellow);border-radius:20px;overflow:hidden;box-shadow:0 0 0 6px var(--coral),0 18px 40px rgba(0,0,0,.4)}
 .inner{position:absolute;inset:0;background-repeat:no-repeat;background-position:center;background-size:contain}
-.tile{position:absolute;width:25%;height:25%;overflow:hidden;transition:left .45s,top .45s}
-.tile>div{position:absolute;width:400%;height:400%;background-repeat:no-repeat;background-position:center;background-size:contain}
+.tile{position:absolute;overflow:hidden;transition:left .45s,top .45s}
+.tile>div{position:absolute;background-repeat:no-repeat;background-position:center;background-size:contain}
 .bar{height:14px;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden;margin:14px auto 0;max-width:520px}
 .bar>div{height:100%;background:var(--coral);width:100%}
 .meta{display:flex;justify-content:space-between;max-width:520px;margin:12px auto 0;font-weight:800}
@@ -134,6 +134,71 @@ const ITEMS = [
  {a:"Tomato", alt:[], u:W("Tomato_je.jpg")},
  {a:"Broccoli", alt:[], u:W("Broccoli_and_cross_section_edit.jpg")},
  {a:"Carrot", alt:["carrots"], u:W("Carrots_of_many_colors.jpg")},
+
+ // --- more logos & tech ---
+ {a:"Intel", alt:[], u:W("Intel_logo_(2020,_light_blue).svg")},
+ {a:"Nvidia", alt:["nvidea"], u:W("Nvidia_logo.svg")},
+ {a:"AMD", alt:[], u:W("AMD_Logo.svg")},
+ {a:"Sony", alt:[], u:W("Sony_logo.svg")},
+ {a:"PlayStation", alt:["play station","ps"], u:W("PlayStation_logo.svg")},
+ {a:"Visa", alt:[], u:W("Visa_Inc._logo.svg")},
+ {a:"Mastercard", alt:["master card"], u:W("Mastercard-logo.svg")},
+ {a:"PayPal", alt:["pay pal"], u:W("PayPal.svg")},
+ {a:"Bitcoin", alt:["btc"], u:W("Bitcoin.svg")},
+ {a:"Zoom", alt:[], u:W("Zoom_Communications_Logo.svg")},
+ {a:"Slack", alt:[], u:W("Slack_icon_2019.svg")},
+ {a:"Dropbox", alt:["drop box"], u:W("Dropbox_Icon.svg")},
+ {a:"Gmail", alt:["google mail","g mail"], u:W("Gmail_icon_(2020).svg")},
+ {a:"Google Maps", alt:["maps"], u:W("Google_Maps_icon_(2020).svg")},
+ {a:"Google Drive", alt:["drive"], u:W("Google_Drive_icon_(2020).svg")},
+ {a:"Telegram", alt:[], u:W("Telegram_logo.svg")},
+ {a:"GitHub", alt:["git hub"], u:W("GitHub_Invertocat_Logo.svg")},
+ {a:"Python", alt:[], u:W("Python-logo-notext.svg")},
+ {a:"Reddit", alt:[], u:W("Reddit_Logo_Icon.svg")},
+ {a:"Twitch", alt:[], u:W("Twitch_Glitch_Logo_Purple.svg")},
+ {a:"Pinterest", alt:[], u:W("Pinterest_Logo.svg")},
+ {a:"Fortnite", alt:[], u:W("Fortnite_F_lettermark_logo.png")},
+ {a:"Bluetooth", alt:["blue tooth"], u:W("Bluetooth.svg")},
+ {a:"USB", alt:[], u:W("USB_Icon.svg")},
+ // --- more brands ---
+ {a:"KFC", alt:["kentucky fried chicken"], u:W("KFC_logo.svg")},
+ {a:"Taco Bell", alt:["tacobell"], u:W("Taco_Bell_2016.svg")},
+ {a:"Pizza Hut", alt:["pizzahut"], u:W("Pizza_Hut_classic_logo.svg")},
+ {a:"Wendy's", alt:["wendys"], u:W("Wendy's_logo_2012.svg")},
+ {a:"IKEA", alt:[], u:W("IKEA_logo.svg")},
+ {a:"Target", alt:[], u:W("Target_Corporation_logo_(vector).svg")},
+ {a:"Costco", alt:[], u:W("Costco_Wholesale_logo_2010-10-26.svg")},
+ {a:"Shell", alt:[], u:W("Shell_logo.svg")},
+ {a:"BP", alt:["british petroleum"], u:W("BP_Helios_logo.svg")},
+ {a:"Lamborghini", alt:["lambo"], u:W("Lamborghini_Logo.svg")},
+ {a:"Honda", alt:[], u:W("Honda_Logo.svg")},
+ {a:"Hyundai", alt:[], u:W("Hyundai_Motor_Company_logo.svg")},
+ {a:"Porsche", alt:[], u:W("Porsche_logo.svg")},
+ // --- symbols & everyday things ---
+ {a:"Peace Sign", alt:["peace symbol","peace"], u:W("Peace_symbol.svg")},
+ {a:"Recycling", alt:["recycle","recycling symbol","recycle symbol"], u:W("Recycle001.svg")},
+ {a:"Yin Yang", alt:["yinyang","yin and yang"], u:W("Yin_yang.svg")},
+ {a:"Dollar Bill", alt:["dollar","one dollar","1 dollar","us dollar","money"], u:W("One_US_dollar_bill,_obverse,_series_2009.jpg")},
+ {a:"Violin", alt:["fiddle"], u:W("Violin_VL100.png")},
+ {a:"Rose", alt:["red rose"], u:W("Rose_Amber_Flush_20070601.jpg")},
+ {a:"Sunflower", alt:["sun flower"], u:W("Sunflower_sky_backdrop.jpg")},
+ // --- more food ---
+ {a:"Cheeseburger", alt:["burger","cheese burger"], u:W("Cheeseburger.jpg")},
+ {a:"Watermelon", alt:["water melon"], u:W("Watermelon_cross_BNC.jpg")},
+ {a:"Pear", alt:[], u:W("Pears.jpg")},
+ {a:"Blueberry", alt:["blueberries"], u:W("Blueberries.jpg")},
+ {a:"Raspberry", alt:["raspberries"], u:W("Raspberries05.jpg")},
+ {a:"Lime", alt:[], u:W("Lime-Whole-Split.jpg")},
+ {a:"Pomegranate", alt:["pomegranite"], u:W("Pomegranate02_edit.jpg")},
+ {a:"Potato", alt:["potatoes","spud"], u:W("Potato_and_cross_section.jpg")},
+ {a:"Onion", alt:["onions"], u:W("Onion_on_White.JPG")},
+ {a:"Cauliflower", alt:[], u:W("Cauliflower.JPG")},
+ {a:"Peas", alt:["pea","green peas"], u:W("Peas_in_pods_-_Studio.jpg")},
+ {a:"Cabbage", alt:[], u:W("Cabbage_and_cross_section_on_white.jpg")},
+ {a:"Capsicum", alt:["bell pepper","pepper","red pepper","red capsicum"], u:W("Red_capsicum_and_cross_section.jpg")},
+ {a:"Pumpkin", alt:[], u:W("Pumpkin.jpg")},
+ {a:"Rice", alt:["white rice"], u:W("Cooked_white_rice.jpg")},
+ {a:"Orange Juice", alt:["oj","juice"], u:W("Orange_juice_1.jpg")},
 ];
 const ROUND_SECONDS = 25, REVEAL_MS = 5000;
 
@@ -158,6 +223,8 @@ function isCorrect(guess, item){
 const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
 const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const boardHTML = sc => '<ol class="board">' + Object.entries(sc).sort((a,b)=>b[1]-a[1]).map(([n,p])=>`<li><span>${esc(n)}</span><b>${p}</b></li>`).join('') + '</ol>';
+function scramble(){ let a; do{ a = shuffle([...Array(G*G).keys()]); }while(a.some((v,i)=>v===i)); return a; }
+const G = 6; // puzzle grid size (G x G)
 const MODES = ['zoom','blur','puzzle'];
 
 /* ========= state ========= */
@@ -220,9 +287,9 @@ function buildStage(cfg, onReady){
   img.onload = () => {
     let inner, tiles = [], lastK = -1;
     if(cfg.mode==='puzzle'){
-      for(let i=0;i<16;i++){
-        const t = document.createElement('div'); t.className='tile';
-        t.innerHTML = `<div style="background-image:url('${url}');left:${-(i%4)*100}%;top:${-(i/4|0)*100}%"></div>`;
+      for(let i=0;i<G*G;i++){
+        const t = document.createElement('div'); t.className='tile'; t.style.width = t.style.height = (100/G)+'%';
+        t.innerHTML = `<div style="width:${G*100}%;height:${G*100}%;background-image:url('${url}');left:${-(i%G)*100}%;top:${-(i/G|0)*100}%"></div>`;
         stage.appendChild(t); tiles.push(t);
       }
     } else { inner = document.createElement('div'); inner.className='inner'; inner.style.backgroundImage=`url('${url}')`;
@@ -233,12 +300,11 @@ function buildStage(cfg, onReady){
       if(cfg.mode==='zoom') inner.style.transform = `scale(${1 + 5*(1-t)*(1-t)})`;
       else if(cfg.mode==='blur') inner.style.filter = `blur(${44*(1-t)*(1-t)}px)`;
       else {
-        const k = Math.floor(Math.min(1, t/.85)*16);
+        const k = Math.floor(Math.min(1, Math.max(0, (t-.08)/.8))*G*G);
         if(k!==lastK){ lastK = k;
-          const solved = new Set(cfg.perm.slice(0,k)), un = [...Array(16).keys()].filter(i=>!solved.has(i));
-          tiles.forEach((el,i)=>{ let p = i;
-            if(!solved.has(i) && un.length>1) p = un[(un.indexOf(i)+1)%un.length];
-            el.style.left = (p%4)*25+'%'; el.style.top = (p/4|0)*25+'%'; });
+          const arr = cfg.arr.slice();            // arr[position] = tile sitting there
+          for(let s=0;s<k;s++){ const tile = cfg.perm[s], at = arr.indexOf(tile); [arr[at], arr[tile]] = [arr[tile], arr[at]]; }
+          arr.forEach((tile,p)=>{ const el = tiles[tile]; el.style.left = (p%G)*(100/G)+'%'; el.style.top = (p/G|0)*(100/G)+'%'; });
         }
       }
       const bar = $('bar'); if(bar) bar.style.width = (100*(1-t))+'%';
@@ -269,7 +335,7 @@ async function hostNext(){
     while(S.pos < S.queue.length){ const idx = S.queue[S.pos++]; if(await canLoad(idx)){ pick = idx; break; } console.warn('Skipped, image failed:', ITEMS[idx].a); }
   }
   if(pick === null){ ch.send({type:'broadcast', event:'end', payload:{scores:S.scores}}); return showEnd(S.scores); }
-  const cfg = {n:S.round+1, total:S.total, idx:pick, mode:MODES[Math.random()*3|0], ox:35+Math.random()*30|0, oy:35+Math.random()*30|0, perm:shuffle([...Array(16).keys()]), dur:ROUND_SECONDS};
+  const cfg = {n:S.round+1, total:S.total, idx:pick, mode:MODES[Math.random()*3|0], ox:35+Math.random()*30|0, oy:35+Math.random()*30|0, perm:shuffle([...Array(G*G).keys()]), arr:scramble(), dur:ROUND_SECONDS};
   S.round++; S.cur = {cfg, answered:{}, t0:Date.now(), over:false};
   ch.send({type:'broadcast', event:'round', payload:cfg});
   app.innerHTML = `<div class="game host"><div>${stageHTML(cfg.n,cfg.total)}<div class="reveal" id="rv">&nbsp;</div></div>
